@@ -6,6 +6,7 @@ import (
 	"io"
 	"reflect"
 	"sort"
+	"strconv"
 	"unsafe"
 )
 
@@ -336,8 +337,10 @@ type encodedKV struct {
 func (sv encodedKeyValues) Len() int           { return len(sv) }
 func (sv encodedKeyValues) Swap(i, j int)      { sv[i], sv[j] = sv[j], sv[i] }
 func (sv encodedKeyValues) Less(i, j int) bool {
-	if len(sv[i].key) < len(sv[j].key){
-		return true
+	numI, errI := strconv.Atoi(sv[i].key)
+	numJ, errJ := strconv.Atoi(sv[j].key)
+	if errI == nil && errJ == nil {
+		return numI < numJ
 	}
 	return sv[i].key < sv[j].key
 }
